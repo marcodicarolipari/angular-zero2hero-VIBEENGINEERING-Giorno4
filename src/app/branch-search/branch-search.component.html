@@ -1,0 +1,40 @@
+<section class="branch-search">
+  <h2>Cerca filiale</h2>
+
+  <div class="search-box">
+    <input
+      type="text"
+      [formControl]="searchControl"
+      placeholder="Città, nome, indirizzo o CAP"
+      aria-label="Cerca filiale"
+      (keydown.enter)="onManualSearch()"
+    />
+    <button type="button" aria-label="Cerca" (click)="onManualSearch()">🔍</button>
+  </div>
+
+  @if (!vm().term && !vm().isLoading) {
+    <p class="hint">Digita per cercare una filiale (minimo 2 caratteri)</p>
+  }
+
+  @if (vm().isLoading) {
+    <div class="spinner" role="status" aria-label="Caricamento"></div>
+  }
+
+  @if (!vm().isLoading && vm().error) {
+    <p class="error" role="alert">{{ vm().error }}</p>
+  }
+
+  @if (!vm().isLoading && !vm().error && vm().term) {
+    <ul class="results">
+      @for (branch of vm().results; track branch.id) {
+        <li class="branch">
+          <strong>{{ branch.name }}</strong>
+          <span>{{ branch.address }}, {{ branch.zipCode }} {{ branch.city }}</span>
+          <span class="distance">{{ branch.distanceKm }} km</span>
+        </li>
+      } @empty {
+        <li class="empty">Nessuna filiale trovata per "{{ vm().term }}"</li>
+      }
+    </ul>
+  }
+</section>
